@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, _
 from samba.dcerpc.dns import res_rec
+from openerp.tools import float_is_zero, float_compare
 
 
 class sale_order_discount(models.Model):
@@ -117,7 +118,7 @@ class invoice_global_discount(models.Model):
         amount_total = self.amount_untaxed - amount_discount + self.amount_tax
         self.amount_total = amount_total
         
-        amount_total_company_signed = self.amount_total
+        amount_total_company_signed = amount_total
         amount_untaxed_signed = self.amount_untaxed
         if self.currency_id and self.currency_id != self.company_id.currency_id:
             amount_total_company_signed = self.currency_id.compute(self.amount_total, self.company_id.currency_id)
@@ -126,3 +127,29 @@ class invoice_global_discount(models.Model):
         self.amount_total_company_signed = amount_total_company_signed * sign
         self.amount_total_signed = self.amount_total * sign
         self.amount_untaxed_signed = amount_untaxed_signed * sign
+
+    @api.one
+    @api.depends(
+        'state', 'currency_id', 'invoice_line_ids.price_subtotal',
+        'move_id.line_ids.amount_residual',
+        'move_id.line_ids.currency_id')
+    def _compute_residual(self):
+        residual = 0.0
+        residual_company_signed = 0.0
+        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+        for line in self.sudo().move_id.line_ids:
+            if line.account_id.internal_type in ('receivable', 'payable'):
+                residual_company_signed += line.amount_residual
+                if line.currency_id == self.currency_id:
+                    residual += line.amount_residual_currency if line.currency_id else line.amount_residual
+                else:
+                    from_currency = (line.currency_id and line.currency_id.with_context(date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
+                    residual += from_currency.compute(line.amount_residual, self.currency_id)
+        self.residual_company_signed = abs(residual_company_signed) * sign - self.amount_discount
+        self.residual_signed = abs(residual) * sign - self.amount_discount
+        self.residual = abs(residual) - self.amount_discount
+        digits_rounding_precision = self.currency_id.rounding
+        if float_is_zero(self.residual, precision_rounding=digits_rounding_precision):
+            self.reconciled = True
+        else:
+            self.reconciled = False
