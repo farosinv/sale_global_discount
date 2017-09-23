@@ -1,4 +1,4 @@
-![Odoo Version](https://img.shields.io/badge/Odoo%20Version-9.0-orange.svg?style=plastic)
+![Odoo Version](https://img.shields.io/badge/Odoo%20Version-10.0-orange.svg?style=plastic)
 
 # Odoo - Sale Global Discount
 

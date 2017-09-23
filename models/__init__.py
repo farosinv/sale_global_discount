@@ -1,3 +1,2 @@
-# -*- coding: utf-8 -*-
-
-from . import models
+from . import sale_order_discount
+from . import invoice_global_discount
