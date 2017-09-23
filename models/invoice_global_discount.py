@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models, _
-
+from odoo.tools import float_compare, float_is_zero, float_repr, float_round
 
 class Invoice_global_discount(models.Model):
 

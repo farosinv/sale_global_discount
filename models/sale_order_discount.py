@@ -68,7 +68,7 @@ class Sale_order_discount(models.Model):
         This method send the discount_type, discount_rate and amount_discount to the
         account.invoice model
         """
-        res = super(sale_order_discount, self)._prepare_invoice()
+        res = super(Sale_order_discount, self)._prepare_invoice()
         res['discount_type'] = self.discount_type
         res['discount_rate'] = self.discount_rate
 
