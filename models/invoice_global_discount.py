@@ -85,3 +85,30 @@ class Invoice_global_discount(models.Model):
             self.reconciled = True
         else:
             self.reconciled = False
+            
+    @api.multi
+    def compute_invoice_totals(self, company_currency, invoice_move_lines):
+        total = 0
+        total_currency = 0
+        for line in invoice_move_lines:
+            if self.currency_id != company_currency:
+                currency = self.currency_id.with_context(date=self._get_currency_rate_date() or fields.Date.context_today(self))
+                if not (line.get('currency_id') and line.get('amount_currency')):
+                    line['currency_id'] = currency.id
+                    line['amount_currency'] = currency.round(line['price'])
+                    line['price'] = currency.compute(line['price'], company_currency)
+            else:
+                line['currency_id'] = False
+                line['amount_currency'] = False
+                line['price'] = self.currency_id.round(line['price'])
+            if self.type in ('out_invoice', 'in_refund'):
+                total += line['price']
+                total_currency += line['amount_currency'] or line['price']
+                line['price'] = - line['price']
+            else:
+                total -= line['price']
+                total_currency -= line['amount_currency'] or line['price']
+        total = total - self.amount_discount
+        total_currency = total_currency - self.amount_discount
+        return total, total_currency, invoice_move_lines
+

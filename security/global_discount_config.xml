@@ -3,16 +3,16 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
 <odoo>
-<!--
-    <record model="ir.model.access" id="sale_order_discount_access_name">
-        <field name="name">sale_order_discount access name</field>
-        <field name="model_id" ref="model_sale_order_discount"/>
-
+<!-- 
+    <record model="ir.model.access" id="global_discount_config_access_name"> TODO acl id
+        <field name="name">global.discount.config access name</field> TODO acl name
+        <field name="model_id" ref="model_global_discount_config"/>
+        TODO review and adapt
         <field name="group_id" ref="base.group_user"/>
         <field name="perm_read" eval="1"/>
         <field name="perm_create" eval="0"/>
         <field name="perm_write" eval="0"/>
         <field name="perm_unlink" eval="0"/>
     </record>
--->
+ -->
 </odoo>

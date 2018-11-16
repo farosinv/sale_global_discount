@@ -15,8 +15,10 @@
         'account',
     ],
     'data': [
+        'security/global_discount_config.xml',
+        'views/global_discount_config.xml',
         'views/invoice_global_discount.xml',
-        'security/sale_order_discount.xml',
+#         'security/sale_order_discount.xml',
         'views/sale_order_discount.xml',
     ],
     'demo': [
