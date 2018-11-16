@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2017 Faros Inversiones Ltda.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="global_discount_config_form_view">
+        <field name="name">global.discount.config.form (in sale_global_discount)</field>
+        <field name="model">sale.config.settings</field>
+        <field name="inherit_id" ref="sale.view_sales_config"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='group_discount_per_so_line']" position="after">
+            	<field name="globaldiscount_account_id" class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
